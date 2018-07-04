@@ -1,0 +1,80 @@
+.header-menu {
+    z-index: 10000;
+    position: relative;
+}
+
+.pagination-size {
+    border: none;
+    background-color: white;
+}
+
+.content-backdown {
+    margin-top: 25px;
+}
+
+.margin-backdown {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.table > thead > tr > td, .table > tbody > tr > td {
+    padding: 6px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.white-input-no-border {
+    border: none !important;
+    background-color: white !important;
+}
+
+.white-input-no-border:focus {
+    border: none !important;
+    background-color: white !important;
+}
+
+.sidebar {
+    z-index: 100 !important;
+}
+
+.sidebar:hover {
+    z-index: 102 !important;
+}
+
+.main-panel {
+    z-index: 100 !important;
+}
+
+body .modal-open {
+    overflow: hidden;
+}
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+    display: none !important;
+}
+
+.card .card-footer {
+    padding: 0 15px 5px !important;
+}
+
+.card-footer-hr {
+    margin-top: 0 !important;
+    margin-bottom: 5px !important;
+}
+
+.btn-in-header {
+    z-index: 10000 !important;
+    position: relative !important;
+}
+
+.text-red{
+    color: red;
+}
+
+.to-left-side {
+    text-align: left !important;
+}
+
+.to-center{
+    text-align: center!important;
+}

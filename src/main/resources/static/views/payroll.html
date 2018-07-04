@@ -1,0 +1,220 @@
+<div ng-controller="payrollController" ng-init="getStaffs(); getCurrency(); getDescription();loadPayrolls();getRole();"
+     class="main-panel" ng-style="style();" resize>
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-minimize">
+                <button onclick="sidebarChange()" class="btn btn-fill btn-icon"><i class="ti-menu"></i></button>
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand" href="#">
+                    Payrolls
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content" style="margin-top: 20px">
+        <div class="row" style="margin-left: 15px; margin-right: 15px">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="pull-right">
+                            <button class="btn btn-info btn-md btn-fill btn-sm header-menu" ng-click="addPayroll();"
+                                    ng-disabled="disableButtons"><i class="fa fa-plus" aria-hidden="true"></i> Create
+                            </button>
+                            <button class="btn btn-success btn-md btn-fill btn-sm header-menu"
+                                    ng-click="applyPayroll();" ng-disabled="disableButtons">
+                                Apply
+                            </button>
+                            <button class="btn btn-primary btn-md btn-fill btn-sm header-menu" ng-click="cancelClick()">
+                                Cancel
+                            </button>
+                        </div>
+                        <h4 class="card-title">Add Payrolls</h4>
+                        <p class="category">New Payroll</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="row" ng-repeat="p in addedPayrolls track by $index">
+                            <form class="form-inline">
+                                <div class="form-group" style="width: 100%">
+                                    <button type="button" class="btn btn-sm btn-trash" ng-click="removeRow($index)">
+                                        <i class="fa fa-trash fa-2x" aria-hidden="true"></i>
+                                    </button>
+                                    <select class="form-control white-input-no-border" ng-model="p.staffId"
+                                            style="width: 15%">
+                                        <option value="" disabled selected>Staff</option>
+                                        <option ng-repeat="staff in staffOptions" value="{{staff.id}}">
+                                            {{staff.firstName}} {{staff.secodName}}
+                                        </option>
+                                    </select>
+                                    <input date-range-picker class="form-control date-picker white-input-no-border"
+                                           type="text" ng-model="p.date"
+                                           options="{singleDatePicker: true, locale: {format: 'DD-MM-YYYY'}}"
+                                           style="width: 12% !important;"/>
+                                    <input date-range-picker class="form-control date-picker white-input-no-border"
+                                           type="text" ng-model="p.periond"
+                                           options="{singleDatePicker: true, locale: {format: 'DD-MM-YYYY'}}"
+                                           style="width: 12% !important;"/>
+                                    <select class="form-control white-input-no-border" ng-model="p.typeId"
+                                            style="width: 15%;">
+                                        <option value="" disabled selected>Type</option>
+                                        <option ng-repeat="type in types" value="{{type.value}}">{{type.name}}</option>
+                                    </select>
+                                    <input type="text" class="form-control white-input-no-border" id="payrollSum"
+                                           ng-model="p.sum" placeholder="Sum" style="width: 7% !important;"/>
+                                    <select class="form-control white-input-no-border" ng-model="p.currencyId"
+                                            style="width: 10%;">
+                                        <option value="" disabled selected>Currency</option>
+                                        <option ng-repeat="c in currencyOptions" value="{{c.id}}">{{c.code}}</option>
+                                    </select>
+                                    <input class="form-control white-input-no-border" type="text"
+                                           placeholder="Description" ng-model="p.description"
+                                           style="width: 15% !important;"/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="row margin-backdown" style="margin-left: 15px; margin-right: 15px">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="pull-right">
+                            <select class="form-control pagination-size" data-ng-model="selectedSize"
+                                    data-ng-options="v as k for (k, v) in sizeOptions"
+                                    style="z-index: 10000; position: relative">
+                            </select>
+                        </div>
+                        <h4 class="card-title">All Payrolls</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="table-responsive table-full-width">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><a href="">#</a></th>
+                                    <th><a>Staff</a></th>
+                                    <th><a>Date</a></th>
+                                    <th><a>Period</a></th>
+                                    <th><a>Type</a></th>
+                                    <th><a>Sum</a></th>
+                                    <th><a>Currency</a></th>
+                                    <th><a>Description</a></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-show="payrolls.length != 0" ng-repeat="item in payrolls"
+                                    ng-click="clickRow(item)" data-toggle="modal" data-target="#payroll-modal">
+                                    <td>{{$index+1}}</td>
+                                    <td>{{item.staffName}}</td>
+                                    <td>{{formatViewDate(item.date)}}</td>
+                                    <td>{{formatViewDate(item.periond)}}</td>
+                                    <td>{{item.typeName}}</td>
+                                    <td>{{item.sum}}</td>
+                                    <td>{{item.code}}</td>
+                                    <td>{{item.description}}</td>
+                                </tr>
+                                <tr ng-show="payrolls.length == 0">
+                                    <td colspan="8">
+                                        <div class="loader text-center" ng-show="showPayrollsLoader"></div>
+                                        <div class="text-center" ng-show="!showPayrollsLoader">No data</div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="fixed-table-pagination text-center" ng-show="payrolls.length != 0">
+                        <div class="pagination">
+                            <uib-pagination total-items="totalPagination" max-size="3" ng-model="selectedPage"
+                                            items-per-page="selectedSize">
+                            </uib-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="payroll-modal" class="modal" role="dialog" style="background: rgba(0, 0, 0, 0.6);">
+        <div class="modal-dialog" style="width:70%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit payroll</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label>
+                                <select class="form-control"
+                                        ng-model="selectedStaffName"
+                                        ng-disabled="disableButtons"
+                                        style="width: 15%!important;">
+                                    <option ng-repeat="staff in staffOptionsModified"
+                                            value="{{staff.name}}">
+                                        {{staff.name}}
+                                    </option>
+                                </select>
+                                <input type="text" class="form-control" ng-model="selectedDate"
+                                       ng-disabled="disableButtons"
+                                       placeholder="Date"
+                                       style="width: 13%!important;"/>
+                                <input type="text" class="form-control"
+                                       ng-model="selectedPeriod"
+                                       ng-disabled="disableButtons"
+                                       placeholder="Period"
+                                       style="width: 13%!important;"/>
+                                <select class="form-control"
+                                        ng-model="selectedTypeValue"
+                                        ng-disabled="disableButtons"
+                                        style="width: 16%!important;">
+                                    <option ng-repeat="t in types"
+                                            value="{{t.name}}">
+                                        {{t.name}}
+                                    </option>
+                                </select>
+                                <input type="text" class="form-control"
+                                       ng-model="selectedSum"
+                                       ng-disabled="disableButtons"
+                                       placeholder="Sum"
+                                       style="width: 12%!important;"/>
+                                <select class="form-control"
+                                        ng-model="selectedCurrencyCode"
+                                        ng-disabled="disableButtons"
+                                        style="width: 13%!important;">
+                                    <option ng-repeat="c in currencyOptions"
+                                            value="{{c.code}}">
+                                        {{c.code}}
+                                    </option>
+                                </select>
+                                <input class="form-control" type="text" placeholder="Description"
+                                       ng-model="selectedDescription"
+                                       ng-disabled="disableButtons"
+                                       style="width: 15%!important;"/>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal"
+                            ng-click="saveExistingPayroll();"
+                            ng-disabled="disableButtons">Save changes
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            ng-click="close();">Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

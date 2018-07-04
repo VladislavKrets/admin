@@ -1,0 +1,54 @@
+.greenTd{
+    background-color:rgba(0,255,0,0.3);
+    color: green;
+}
+
+.redTd{
+    background-color:rgba(255,0,0,0.3);
+    color: red;
+}
+
+.greyTd{
+    background-color:rgba(192,192,192,0.3);
+    color: grey;
+}
+
+.fixed-cols > thead:first-child > tr:first-child > th:first-child {
+    position: absolute!important;
+    display: inline-block!important;
+    background: #FFFFFF!important;
+    z-index: 2;
+}
+
+.fixed-cols > tbody > tr > td:first-child {
+    position: absolute!important;
+    display: inline-block!important;
+    background: #FFFFFF!important;
+    z-index: 2;
+}
+
+.fixed-cols > thead:first-child > tr:first-child > th:nth-child(3) {
+    padding-left: 260px!important;
+    padding-right: 10px!important;
+}
+
+.fixed-cols > tbody > tr > td:nth-child(3) {
+    padding-left: 260px!important;
+}
+
+.fixed-cols > thead:first-child > tr:first-child > th:nth-child(2) {
+    position: absolute!important;
+    display: inline-block!important;
+    background: #FFFFFF!important;
+    padding-left: 170px!important;
+    z-index: 1;
+}
+
+.fixed-cols > tbody > tr > td:nth-child(2) {
+    width: 230px!important;
+    position: absolute!important;
+    display: inline-block!important;
+    background: #FFFFFF!important;
+    padding-left: 160px!important;
+    z-index: 1;
+}

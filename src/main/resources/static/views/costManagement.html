@@ -1,0 +1,285 @@
+<div ng-controller="costManagementController" ng-init="loadCosts(); getBuyers(); getTypes(); initRole();"
+     class="main-panel" ng-style="style()" resize>
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-minimize">
+                <button onclick="sidebarChange()" class="btn btn-fill btn-icon"><i class="ti-menu"></i></button>
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand" href="#">
+                    Cost Management
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content content-backdown">
+        <div class="row margin-backdown">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="padding-top: 0">
+                        <form class="form-inline" style="margin-left: 10px;margin-top: 10px;">
+                            <div class="form-group">
+                                <select ng-hide="hideBuyerSelect"
+                                        class="selectpicker" multiple
+                                        data-style="btn-info btn-fill btn-sm btn-block"
+                                        data-size="5"
+                                        title="Buyer"
+                                        data-header="Buyers"
+                                        ng-model="selectedBuyerNames"
+                                        style="width: 130%;margin-left: 5px;">
+                                    <option class="small-font" ng-repeat="b in buyerNames" data-select-watcher
+                                            data-last="{{$last}}" value="{{b.id}}">{{b.name}}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <select class="selectpicker" multiple
+                                        data-style="btn-info btn-fill btn-sm btn-block"
+                                        data-size="5"
+                                        data-header="Types"
+                                        selected-header="options selected"
+                                        title="Types"
+                                        ng-model="selectedTypes"
+                                        style="width: 120%;">
+                                    <option class="small-font" ng-repeat="t in types"
+                                            data-select-watcher
+                                            data-last="{{$last}}" value="{{t.id}}">{{t.name}}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group" style="padding-top: 15px;">
+                                    <div class="input-group-addon white-input-no-border"><i
+                                            class="fa fa-search"></i></div>
+                                    <input type="text" class="form-control white-input-no-border"
+                                           placeholder="Search..."
+                                           ng-model="searchFilter">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <input date-range-picker
+                                       class="form-control date-picker white-input-no-border"
+                                       type="text" ng-model="dt"
+                                       options="dpOptions"
+                                       placeholder="Click to choose date..."
+                                       style="width: 110%;"/>
+                            </div>
+
+                            <div class="pull-right form-group"
+                                style="padding-top: 15px;">
+                                <div class="form-group">
+                                    <button class="btn btn-info btn-sm btn-fill"
+                                            ng-click="addCost();"
+                                            ng-disabled="disableCreateCost"
+                                            style="z-index: 10000; position: relative">
+                                        Create
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-success btn-md btn-fill btn-sm" ng-click="onApplyClick();"
+                                            ng-disabled="disableCreateCost"
+                                            style="z-index: 10000; position: relative">
+                                        Apply
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-md btn-fill btn-sm"
+                                            style="z-index: 10000; position: relative"
+                                            ng-click="loadCosts();">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-content table-responsive table-full-width" style="margin-top: -15px">
+                            <table class="table cost-management-table">
+                                <thead>
+                                <tr>
+                                    <th><a>Buyer name</a></th>
+                                    <th><a>Date</a></th>
+                                    <th><a>Spent</a></th>
+                                    <th><a>Description</a></th>
+                                    <th><a>Type</a></th>
+                                    <th><a>Create</a></th>
+                                    <th><a>Update</a></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="c in costs | filter:searchFilter">
+                                    <td class="cost-management-table" style="text-align: left!important;">
+                                        <form class="form-inline">
+                                            <div class="form-group" style="width: 10%!important;">
+                                                <a data-toggle="modal" data-target="#confirmDeletingModal"
+                                                   ng-click="selectRow(c.id)"
+                                                   ng-disabled="disableCreateCost">
+                                                    <i class="fa fa-trash fa-1x" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                            <div class="form-group" style="width: 80%!important;">
+                                                <select class="form-control white-input-no-border" ng-model="c.buyer"
+                                                        ng-change="updateBuyerName(c.id);"
+                                                        ng-disabled="disableCreateCost"
+                                                        style="width: 98%!important;">
+                                                    <option ng-repeat="b in buyerNames"
+                                                            value="{{b.name}}">
+                                                        {{b.name}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </form>
+                                    </td>
+                                    <td class="cost-management-table">
+                                        <div style="width:100%; margin-left: -10px;">
+                                            <input date-range-picker
+                                                   class="form-control date-picker white-input-no-border"
+                                                   type="text" ng-model="c.date"
+                                                   ng-click="updateDate(c.id);"
+                                                   ng-disabled="disableCreateCost"
+                                                   options="{singleDatePicker: true}"/>
+                                        </div>
+                                    </td>
+                                    <td class="cost-management-table">
+                                        <input type="number" class="form-control white-input-no-border"
+                                               placeholder="Spent"
+                                               ng-model="c.sum"
+                                               ng-disabled="disableCreateCost"
+                                               ng-change="updateSum(c.id);"/>
+                                    </td>
+                                    <td class="cost-management-table">
+                                        <input type="text" class="form-control white-input-no-border"
+                                               placeholder="Description"
+                                               ng-model="c.description"
+                                               style="border: 1px solid white; background-color: white;"
+                                               ng-disabled="disableDescription"/>
+                                    </td>
+                                    <td class="cost-management-table"
+                                        style="text-align: right!important; padding-right: 10px!important;">
+                                        <form class="form-inline">
+                                            <div class="form-group" style="width:80%!important;">
+                                                <select class="form-control white-input-no-border" ng-model="c.name"
+                                                        ng-change="updateType(c.id);"
+                                                        ng-disabled="disableCreateCost"
+                                                        style="width: 100%!important; margin-left: -20px;">
+                                                    <option ng-repeat="t in types"
+                                                            value="{{t.name}}">
+                                                        {{t.name}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group" style="width: 10%!important;">
+                                                <a data-toggle="modal"
+                                                   ng-disabled="disableCreateCost"
+                                                   data-target="#addTypeModal"
+                                                   ng-click="clickAddNewType(c.id);">
+                                                    <i class="fa fa-plus fa-1x" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        </form>
+                                    </td>
+                                    <td class="cost-management-table">
+                                        {{c.create}}
+                                    </td>
+                                    <td class="cost-management-table">
+                                        {{c.update}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="costs.length == 0">
+                                    <td colspan="7">
+                                        <div class="loader" style="text-align: center;"
+                                             ng-show="showCostManagementLoader"></div>
+                                        <div style="text-align: center;" ng-show="!showCostManagementLoader">No
+                                            data
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="bootstrap-table fixed-table-pagination text-center" ng-show="costs.length != 0">
+                                <div class="pagination">
+                                    <uib-pagination total-items="totalPagination" max-size="5"
+                                                    ng-model="selectedPage" items-per-page="selectedSize"
+                                                    ng-click="loadCosts();">
+                                    </uib-pagination>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="addTypeModal" class="modal fade" role="dialog" style="background: rgba(0, 0, 0, 0.6);">
+        <div class="modal-dialog" style="width:20%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Type of expenses</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label>
+                                <input type="text" class="form-control"
+                                       ng-disabled="disableCreateCost"
+                                       ng-model="newTypeValue" placeholder="Type"
+                                       style="width: 100%!important;"/>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal"
+                            ng-click="addType();"
+                            ng-disabled="disableCreateCost">Apply
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            ng-click="">Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--style="background: rgba(0, 0, 0, 0.6);"-->
+    <div id="confirmDeletingModal" class="modal fade" role="dialog" style="background: rgba(0, 0, 0, 0.6);">
+        <div class="modal-dialog" style="width:20%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm Deleting Row</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label>
+                                <h5>Confirm deleting please, are you sure you want delete this row?</h5>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal"
+                            ng-click="deleteRow();"
+                            ng-disabled="disableCreateCost">Yes
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            ng-click="">No
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,403 @@
+<div ng-controller="adminDashboardController" ng-init="initAdminDashboardData(); getAdminDashboardChartData();"
+     class="main-panel">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-minimize">
+                <button class="btn btn-fill btn-icon" onclick="sidebarChange()"><i class="ti-menu"></i></button>
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand" href="">
+                    Admin Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="content">
+        <div class="row" style="margin-left: 15px; margin-right: 15px">
+            <div class="row" style="margin-left: 15px; margin-right: 15px; margin-top: 25px">
+                <div class="col-lg-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <div class="icon-big icon-success text-center">
+                                        <i class="ti-stats-up"></i>
+                                    </div>
+                                </div>
+                                <div class="col-xs-10">
+                                    <div class="numbers">
+                                        <p>Rev. Today</p>
+                                        {{revenueToday}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <div class="icon-big icon-success text-center">
+                                        <i class="ti-angle-double-up"></i>
+                                    </div>
+                                </div>
+                                <div class="col-xs-10">
+                                    <div class="numbers">
+                                        <p>Profit today</p>
+                                        {{profitToday}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <div class="icon-big icon-warning text-center">
+                                        <i class="ti-stats-up"></i>
+                                    </div>
+                                </div>
+                                <div class="col-xs-10">
+                                    <div class="numbers">
+                                        <p>Rev. Yesterday</p>
+                                        {{revenueYesterday}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <div class="icon-big icon-warning text-center">
+                                        <i class="ti-angle-double-up"></i>
+                                    </div>
+                                </div>
+                                <div class="col-xs-10">
+                                    <div class="numbers">
+                                        <p>Profit yesterday</p>
+                                        {{profitYesterday}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-left: 15px; margin-right: 15px">
+                <div class="col-md-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <div class="icon-big icon-info text-center">
+                                        <i class="ti-pulse"></i>
+                                    </div>
+                                </div>
+                                <div class="col-xs-10">
+                                    <div class="numbers">
+                                        <p>ROI Today</p>
+                                        {{roiToday}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6"></div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <div class="icon-big icon-success text-center">
+                                        <i class="ti-pulse"></i>
+                                    </div>
+                                </div>
+                                <div class="col-xs-10">
+                                    <div class="numbers">
+                                        <p>ROI Yesterday</p>
+                                        {{roiYesterday}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6"></div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-right: 15px;margin-left: 15px;">
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="pull-left">
+                            <h4 class="card-title" style="color:green;">Revenue</h4>
+                        </div>
+                        <div class="pull-right">
+                            <a style="color: green; cursor: pointer;"
+                               ng-click="getBigChartData(1);setCurrentMonth();"
+                               data-toggle="modal"
+                               data-target="#revenueChartModal">
+                                <i class="fa fa-area-chart fa-2x" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-content" style="margin-top: 10px!important;">
+                        <div class="ct-chart ct-golden-section" id="revenueChart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="pull-left">
+                            <h4 class="card-title" style="color:red;">Spent</h4>
+                        </div>
+                        <div class="pull-right">
+                            <a style="color: red; cursor: pointer;"
+                               ng-click="getBigChartData(0);setCurrentMonth();"
+                               data-toggle="modal"
+                               data-target="#spentChartModal">
+                                <i class="fa fa-area-chart fa-2x" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-content" style="margin-top: 10px!important;">
+                        <div class="ct-chart ct-golden-section" id="spentChart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="pull-left">
+                            <h4 class="card-title" style="color:darkviolet;">Profit</h4>
+                        </div>
+                        <div class="pull-right">
+                            <a style="color: darkviolet; cursor: pointer;"
+                               ng-click="getBigChartData(2);setCurrentMonth();"
+                               data-toggle="modal"
+                               data-target="#profitChartModal">
+                                <i class="fa fa-area-chart fa-2x" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-content" style="margin-top: 10px!important;">
+                        <div class="ct-chart ct-golden-section" id="profitChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-right: 15px;margin-left: 15px">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="pull-right">
+                            <select class="form-control white-input-no-border" data-ng-model="selectedDate"
+                                    ng-change="initAdminDashboardData();getAdminDashboardChartData();"
+                                    data-ng-options="v as k for (k, v) in dateOptions"
+                                    style="z-index: 10000; position: relative">
+                            </select>
+                        </div>
+                        <h4 class="card-title">Settlement Slip</h4>
+                        <p class="category">{{buyerName}}</p>
+                    </div>
+                    <div class="card-content" style="padding: 0 15px 10px 15px;">
+                        <div class="card-content table-responsive table-full-width">
+                            <table class="table">
+                                <thead>
+                                <tr style="text-align: center; vertical-align: middle">
+                                    <th class="to-left-side">
+                                        <a href="">Buyer</a>
+                                    </th>
+
+                                    <th>
+                                        <a href="">Revenue</a>
+                                    </th>
+
+                                    <th>
+                                        <a href="">Spent</a>
+                                    </th>
+
+                                    <th>
+                                        <a href="">Profit</a>
+                                    </th>
+                                    <th>
+                                        <a href="">ROI</a>
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr style="text-align: center; vertical-align: middle"
+                                    ng-repeat="item in adminDashboardData">
+                                    <td class="to-left-side">{{item.buyer}}</td>
+                                    <td>{{item.revenue}}</td>
+                                    <td>{{item.spent}}</td>
+                                    <td>{{toFixedView(item.profit)}}</td>
+                                    <td>{{toFixedView(calculateRoi(item.profit,item.spent))}}</td>
+                                </tr>
+                                <tr style="text-align: center; vertical-align: middle">
+                                    <td class="to-left-side">
+                                        <a href="">Total:</a>
+                                    </td>
+
+                                    <td>
+                                        <a href="">{{revTotal}}</a>
+                                    </td>
+
+                                    <td>
+                                        <a href="">{{spentTotal}}</a>
+                                    </td>
+
+                                    <td>
+                                        <a href="">{{profitTotal}}</a>
+                                    </td>
+                                    <td>
+                                        <a href="">{{roiTotal}}</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="revenueChartModal" class="modal fade" role="dialog" style="background: rgba(0, 0, 0, 0.6);">
+        <div class="modal-dialog" style="width:80%!important;height: 40%!important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            ng-click="clearSelects();"
+                            data-dismiss="modal">&times;
+                    </button>
+                    <h4 class="modal-title">Revenue chart</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-9"></div>
+                        <div class="col-md-3">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <select class="white-input-no-border" data-ng-model="bigChartSelectedYear"
+                                            data-ng-options="v as k for (k, v) in bigChartYearOptions"
+                                            ng-change="getBigChartData(1);"
+                                            style="z-index: 10000; position: relative">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select class="white-input-no-border" data-ng-model="bigChartSelectedMonth"
+                                            data-ng-options="v as k for (k, v) in bigChartMonthOptions"
+                                            ng-change="getBigChartData(1);"
+                                            style="z-index: 10000; position: relative">
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ct-chart ct-golden-section" id="bigRevenueChart"
+                         style="width: 90%!important; height: 40%!important;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="spentChartModal" class="modal fade" role="dialog" style="background: rgba(0, 0, 0, 0.6);">
+        <div class="modal-dialog" style="width:80%!important;height: 40%!important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            ng-click="clearSelects();"
+                            data-dismiss="modal">&times;
+                    </button>
+                    <h4 class="modal-title">Spent chart</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-9"></div>
+                        <div class="col-md-3">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <select class="white-input-no-border" data-ng-model="bigChartSelectedYear"
+                                            data-ng-options="v as k for (k, v) in bigChartYearOptions"
+                                            ng-change="getBigChartData(0);"
+                                            style="z-index: 10000; position: relative">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select class="white-input-no-border" data-ng-model="bigChartSelectedMonth"
+                                            data-ng-options="v as k for (k, v) in bigChartMonthOptions"
+                                            ng-change="getBigChartData(0);"
+                                            style="z-index: 10000; position: relative">
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ct-chart ct-golden-section" id="bigSpentChart"
+                         style="width: 90%!important; height: 40%!important;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="profitChartModal" class="modal fade" role="dialog" style="background: rgba(0, 0, 0, 0.6);">
+        <div class="modal-dialog" style="width:80%!important;height: 40%!important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            ng-click="clearSelects();"
+                            data-dismiss="modal">&times;
+                    </button>
+                    <h4 class="modal-title">Profit chart</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-9"></div>
+                        <div class="col-md-3">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <select class="white-input-no-border" data-ng-model="bigChartSelectedYear"
+                                            data-ng-options="v as k for (k, v) in bigChartYearOptions"
+                                            ng-change="getBigChartData(2);"
+                                            style="z-index: 10000; position: relative">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select class="white-input-no-border" data-ng-model="bigChartSelectedMonth"
+                                            data-ng-options="v as k for (k, v) in bigChartMonthOptions"
+                                            ng-change="getBigChartData(2);"
+                                            style="z-index: 10000; position: relative">
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ct-chart ct-golden-section" id="bigProfitChart"
+                         style="width: 90%!important; height: 40%!important;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

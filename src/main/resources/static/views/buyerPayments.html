@@ -1,0 +1,187 @@
+<div ng-controller="buyerPaymentsController" class="main-panel"
+     ng-style="style();" resize ng-init="initPayments();checkRole();">
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-minimize">
+                <button onclick="sidebarChange()" class="btn btn-fill btn-icon"><i class="ti-menu"></i></button>
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand" href="#">
+                    Buyer Payments
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content" style="margin-top: 20px">
+        <div class="row" style="margin-left: 15px; margin-right: 15px">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="pull-right">
+                            <button class="btn btn-info btn-md btn-fill btn-sm"
+                                    ng-click="addPayment();" data-toggle="modal" data-target="#add-payment-modal"
+                                    style="z-index: 10000; position: relative"
+                                    ng-disabled="isBuyer">
+                                <i class="fa fa-plus" aria-hidden="true"></i> Create
+                            </button>
+                        </div>
+                        <h4 class="card-title">Payments</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="table-responsive table-full-width">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><a>Staff</a></th>
+                                    <th><a>Payroll</a></th>
+                                    <th><a>Date</a></th>
+                                    <th><a>Payroll Date</a></th>
+                                    <th><a>Sum</a></th>
+                                    <th><a>Type</a></th>
+                                    <th><a>Wallet</a></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="payment in payments" ng-show="payments.length !== 0">
+                                    <td>{{payment.staff}}</td>
+                                    <td>{{payment.payroll}}</td>
+                                    <td>{{formatDate(payment.date)}}</td>
+                                    <td>{{formatDate(payment.payroll)}}</td>
+                                    <td>{{payment.sum}} {{payment.code}}</td>
+                                    <td>{{toUpperCase(payment.type)}}</td>
+                                    <td>{{toUpperCase(payment.wallet)}}</td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="loader" style="text-align: center;" ng-show="showLoader"></div>
+                                        <div style="text-align: center;" ng-show="payments.length === 0 && !showLoader">
+                                            No data
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="add-payment-modal" class="modal" role="dialog" style="background: rgba(0, 0, 0, 0.6);">
+        <div class="modal-dialog" style="width:50%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add payment</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Select Staff</label>
+                            <div class="col-md-8">
+                                <select class="form-group form-control white-input-no-border" ng-model="selectedStaff"
+                                        ng-change="getByStaffId();">
+                                    <option value="" disabled selected>Staff</option>
+                                    <option ng-repeat="staff in staffs" value="{{staff.id}}">
+                                        {{displayStaffFullName(staff.firstName, staff.secodName);}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Select Payroll</label>
+                            <div class="col-md-8">
+                                <select class="form-group form-control white-input-no-border"
+                                        ng-model="selectedPayroll"
+                                        ng-disabled="disableWalletPayrolSelects">
+                                    <option value="" disabled selected>Payroll</option>
+                                    <option ng-repeat="payroll in currentStaffPayrolls"
+                                            value="{{payroll.id}}"> {{payroll.description}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Select Date</label>
+                            <div class="col-md-8">
+                                <input class="form-group form-control date-picker white-input-no-border"
+                                       type="text" ng-model="selectedDate" date-range-picker
+                                       options="{singleDatePicker: true, locale: {format: 'DD-MM-YYYY'}}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Select Payroll Date</label>
+                            <div class="col-md-8">
+                                <input class="form-group form-control date-picker white-input-no-border"
+                                       type="text" ng-model="selectedPayrollDate" date-range-picker
+                                       options="{singleDatePicker: true, locale: {format: 'DD-MM-YYYY'}}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Sum</label>
+                            <div class="col-md-8">
+                                <input type="number" class="form-group form-control white-input-no-border"
+                                       ng-model="selectedSum" placeholder="Sum"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Select Type</label>
+                            <div class="col-md-8">
+                                <select class="form-group form-control white-input-no-border" ng-model="selectedType">
+                                    <option value="" disabled selected>Type</option>
+                                    <option ng-repeat="type in types"
+                                            value="{{type.id}}">{{type.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Select Currency</label>
+                            <div class="col-md-8">
+                                <select class="form-group form-control white-input-no-border" ng-model="selectedCode">
+                                    <option value="" disabled selected>Currency</option>
+                                    <option ng-repeat="currency in currencyOptions"
+                                            value="{{currency.id}}">{{currency.code}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Select Wallet</label>
+                            <div class="col-md-8">
+                                <select class="form-group form-control white-input-no-border"
+                                        ng-model="selectedWallet"
+                                        ng-disabled="disableWalletPayrolSelects">
+                                    <option value="" disabled selected>Wallet</option>
+                                    <option ng-repeat="wallet in currentStaffWallets"
+                                            value="{{wallet.id}}">{{wallet.type}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal"
+                            ng-click="applyPayment();">
+                        Apply
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            ng-click="close();">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

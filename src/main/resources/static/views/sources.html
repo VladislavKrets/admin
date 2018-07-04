@@ -1,0 +1,152 @@
+<div ng-controller="sourcesController" ng-init="initsources();" class="main-panel">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-minimize">
+                <button class="btn btn-fill btn-icon" onclick="sidebarChange()"><i class="ti-menu"></i></button>
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand">
+                    Revenue&Spent
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="content content-backdown">
+        <div class="row margin-backdown">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <form class="form-inline">
+
+                                    <div class="form-group" ng-init="getBuyers();"
+                                         style="margin-right:5px;margin-left: 10px;">
+                                        <select ng-hide="hideBuyerSelect" class="selectpicker" multiple
+                                                data-style="btn-info btn-fill btn-block btn-sm"
+                                                data-size="5" title="Buyer" data-header="Buyers"
+                                                ng-model="selectedBuyerNames" style="margin-left: 5px;">
+                                            <option class="small-font" ng-repeat="b in buyerNames" data-select-watcher
+                                                    data-last="{{$last}}" value="{{b.id}}">{{b.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <input date-range-picker
+                                               class="form-control date-picker white-input-no-border"
+                                               type="text" ng-model="dt"
+                                               options="dpOptions"
+                                               placeholder="Click to filter by date..."
+                                               style="width: 110%;"/>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="row">
+                                <div class="col-md-12" style="text-align: right">
+                                    <button class="btn btn-success btn-sm btn-fill" ng-click="applySources();">
+                                        Apply
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-content table-responsive table-full-width" style="margin-top: -25px">
+                        <table class="table">
+                            <thead>
+                            <tr class="text-center" style="vertical-align: middle">
+                                <th>
+                                    <a href="">
+                                        Name
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="">
+                                        Date
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="">
+                                        Description
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="">
+                                        Spent
+                                    </a>
+                                </th>
+
+                                <th>
+                                    <a href="">
+                                        Revenue
+                                    </a>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="item in sources">
+                            <tr>
+                                <td style="text-align: left; cursor: pointer;"
+                                    colspan="3" data-toggle="collapse"
+                                    ng-click="showBuyerDetailsColumn(item.buyerId);">
+                                    <strong class="panel-heading">Buyer: {{item.buyer}} <i
+                                            class="ti-angle-down"></i></strong></td>
+                                <td class="text-center">
+                                    <strong class="panel-heading">{{item.spent}}</strong>
+                                </td>
+                                <td class="text-center">
+                                    <strong class="panel-heading">{{item.revenue}}</strong>
+                                </td>
+                            </tr>
+
+                            <tr style="text-align: left; vertical-align: middle"
+                                ng-repeat-start="d in item.data"
+                                ng-show="buyerDetails && item.buyerId == id">
+                                <td style="cursor: pointer; text-align: left;"
+                                    data-toggle="collapse" colspan="3"
+                                    ng-click="showBuyerByDateDetailsColumn(item.buyerId, d.date);">
+                                    <strong style="margin-left: 35px!important;">Date: {{formatViewDate(d.date)}}
+                                        <i class="ti-angle-down"></i></strong>
+                                </td>
+                                <td style="text-align: center;"><strong>{{d.spent}}</strong></td>
+                                <td style="text-align: center;"><strong>{{d.revenue}}</strong></td>
+                            </tr>
+
+                            <tr style="text-align: center; vertical-align: middle"
+                                ng-repeat="det in d.dateDetails"
+                                ng-show="dateDetails && det.date == buyerDate && det.buyerId == id">
+                                <td>{{det.buyer}}</td>
+                                <td>{{formatViewDate(det.date)}}</td>
+                                <td>{{det.type}}</td>
+                                <td>{{det.spent}}</td>
+                                <td>{{det.revenue}}</td>
+                            </tr>
+
+                            <tr ng-repeat-end
+                                ng-show="buyerDetails && item.buyerInfo.buyerId == id">
+                                <td style="text-align: left; vertical-align: middle" colspan="3">
+                                    <strong>Total by buyer: {{item.buyerInfo.buyerName}}</strong></td>
+                                <td><strong>{{item.sources.sum + item.expenses.sum}} USD</strong></td>
+                                <td><strong>{{item.postbacks.sum}}</strong></td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr ng-show="sources.length == 0">
+                                <td colspan="5">
+                                    <div class="loader" style="text-align: center;" ng-show="showsourcesLoader"></div>
+                                    <div style="text-align: center;" ng-show="!showsourcesLoader">No data</div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

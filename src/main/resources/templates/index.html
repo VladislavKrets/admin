@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html ng-app="Application">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Omnia Digital</title>
+    <link href="css/nya-bs-select.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="css/font-awesome.min.css"/>
+    <link href="css/angular-material.min.css" rel="stylesheet"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/chartist.min.css" rel="stylesheet"/>
+    <link href="css/chartist-plugin-tooltip.css" rel="stylesheet"/>
+    <link href="css/paper-dashboard.css" rel="stylesheet"/>
+    <link href='css/css.css' rel='stylesheet' type='text/css'/>
+    <link href='css/common.css' rel='stylesheet' type='text/css'/>
+    <link href='css/cost-management.css' rel='stylesheet' type='text/css'/>
+    <link href="css/themify-icons.css" rel="stylesheet"/>
+    <link href="css/alertify.min.css" rel="stylesheet"/>
+    <link href="css/default.min.css" rel="stylesheet"/>
+    <link href="css/modal.css" rel="stylesheet"/>
+    <link href="css/chart.css" rel="stylesheet"/>
+    <link href="css/total.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/daterangepicker.css"/>
+    <style>
+        .alertify .alert .msg, .alertify .dialog .msg {
+            width: 95% !important;
+        }
+
+        .sidebar-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body style="background-color: #f4f3ef" ng-controller="mainController">
+<div class="sidebar" data-background-color="white" data-active-color="warning" ng-cloak="" ng-init="getUsername();">
+    <div class="logo">
+        <a id="mini-logo" class="simple-text logo-mini">
+            OD
+        </a>
+        <a id="normal-logo" class="simple-text logo-normal text-center">
+            OMNIA DIGITAL
+        </a>
+        <h6 class="text-center" style="margin-top: -10px; color: #dedede">{{version}}</h6>
+    </div>
+    <div class="sidebar-wrapper" style="overflow: auto !important;">
+        <div class="user">
+            <div class="info">
+                <div class="photo">
+                    <img src="img/default_user.png"/>
+                </div>
+
+                <a data-toggle="collapse" data-target="#username" class="collapsed" id="el31">
+	                        <span>
+                                {{username}}
+		                        <b class="caret"></b>
+							</span>
+                </a>
+                <div class="clearfix"></div>
+
+                <div class="collapse" id="username">
+                    <ul class="nav">
+                        <li>
+                            <a>
+                                <span class="sidebar-mini">Mp</span>
+                                <span class="sidebar-normal">Profile</span>
+                            </a>
+                        </li>
+                        <li id="el32" ng-click="setActive(31,32)">
+                            <a href="#!user/password">
+                                <span class="sidebar-mini">CP</span>
+                                <span class="sidebar-normal">Change Password</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <span class="sidebar-mini">UR</span>
+                                <span class="sidebar-normal">Users and rights</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <ul class="nav">
+            <li id="el1" ng-click="setActive(1)">
+                <a href="#!home">
+                    <i class="ti-home"></i>
+                    <p>Home</p>
+                </a>
+            </li>
+            <li id="el24" ng-click="setActive(24)" class="active">
+                <a href="#!dashboard">
+                    <i class="ti-layout"></i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+
+            <li id="el2">
+                <a data-toggle="collapse" data-target="#finance">
+                    <i class="ti-money"></i>
+                    <p>Finance
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse" id="finance">
+                    <ul class="nav">
+                        <li id="el3" ng-click="setActive(2,3)">
+                            <a href="#!payroll">
+                                <span class="sidebar-mini">P</span>
+                                <span class="sidebar-normal">Payrolls</span>
+                            </a>
+                        </li>
+                        <li id="el4" ng-click="setActive(2,4)">
+                            <a>
+                                <span class="sidebar-mini">TLF</span>
+                                <span class="sidebar-normal">Team Leader Finance</span>
+                            </a>
+                        </li>
+                        <li id="el5" ng-click="setActive(2,5)">
+                            <a>
+                                <span class="sidebar-mini">IM</span>
+                                <span class="sidebar-normal">Income management</span>
+                            </a>
+                        </li>
+                        <li id="el6" ng-click="setActive(2,6)">
+                            <a>
+                                <span class="sidebar-mini">R</span>
+                                <span class="sidebar-normal">Receivables</span>
+                            </a>
+                        </li>
+                        <li id="el7" ng-click="setActive(2,7)">
+                            <a href="#!finance/total">
+                                <span class="sidebar-mini">T</span>
+                                <span class="sidebar-normal">Total by buyer</span>
+                            </a>
+                        </li>
+                        <li id="el8" ng-click="setActive(2,8)">
+                            <a>
+                                <span class="sidebar-mini">S</span>
+                                <span class="sidebar-normal">Salary</span>
+                            </a>
+                        </li>
+                        <li id="el9" ng-click="setActive(2,9)">
+                            <a href="#!/cost/management">
+                                <span class="sidebar-mini">CM</span>
+                                <span class="sidebar-normal">Cost management</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li id="el10">
+                <a data-toggle="collapse" data-target="#buyer">
+                    <i class="ti-wallet"></i>
+                    <p>
+                        Buyer
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse" id="buyer">
+                    <ul class="nav">
+                        <li id="el11" ng-click="setActive(10,11)">
+                            <a href="#!buyer/payments">
+                                <span class="sidebar-mini">P</span>
+                                <span class="sidebar-normal">Payments</span>
+                            </a>
+                        </li>
+                        <li id="el12" ng-click="setActive(10,12)">
+                            <a href="#!buyer/plan">
+                                <span class="sidebar-mini">PB</span>
+                                <span class="sidebar-normal">Plan by buyer</span>
+                            </a>
+                        </li>
+                        <li id="el13" ng-click="setActive(10,13)">
+                            <a href="#!buyer/afid">
+                                <span class="sidebar-mini">AfID</span>
+                                <span class="sidebar-normal">Get AfID</span>
+                            </a>
+                        </li>
+                        <li id="el14" ng-click="setActive(10,14)">
+                            <a>
+                                <span class="sidebar-mini">PF</span>
+                                <span class="sidebar-normal">Personal finance</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li id="el15">
+                <a data-toggle="collapse" data-target="#adverts">
+                    <i class="ti-id-badge"></i>
+                    <p>
+                        Adverts
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse" id="adverts">
+                    <ul class="nav">
+                        <li id="el16" ng-click="setActive(15,16)">
+                            <a href="#!balance/advertiser">
+                                <span class="sidebar-mini">BA</span>
+                                <span class="sidebar-normal">Balance by advertiser</span>
+                            </a>
+                        </li>
+                        <li id="el17" ng-click="setActive(15,17)">
+                            <a href="#!balance/month">
+                                <span class="sidebar-mini">BM</span>
+                                <span class="sidebar-normal">Balance per month</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li id="el18">
+                <a data-toggle="collapse" data-target="#reports">
+                    <i class="ti-files"></i>
+                    <p>
+                        Reports
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse" id="reports">
+                    <ul class="nav">
+                        <li id="el19" ng-click="setActive(18,19)">
+                            <a href="#!postback">
+                                <span class="sidebar-mini">P</span>
+                                <span class="sidebar-normal">Postbacks</span>
+                            </a>
+                        </li>
+                        <li id="el20" ng-click="setActive(18,20)">
+                            <a href="#!sources">
+                                <span class="sidebar-mini">RS</span>
+                                <span class="sidebar-normal">Revenue|Spent</span>
+                            </a>
+                        </li>
+                        <li id="el21" ng-click="setActive(18,21)">
+                            <a href="#!statistic">
+                                <span class="sidebar-mini">SS</span>
+                                <span class="sidebar-normal">Spent by buyer</span>
+                            </a>
+                        </li>
+                        <li id="el22" ng-click="setActive(18,22)">
+                            <a href="#!buyerStatistic">
+                                <span class="sidebar-mini">SB</span>
+                                <span class="sidebar-normal">Spent</span>
+                            </a>
+                        </li>
+                        <li id="el23" ng-click="setActive(18,23)">
+                            <a>
+                                <span class="sidebar-mini">A</span>
+                                <span class="sidebar-normal">Advertisers</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li id="el25">
+                <a data-toggle="collapse" data-target="#catalogs">
+                    <i class="ti-folder"></i>
+                    <p>
+                        Catalogs
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse" id="catalogs">
+                    <ul class="nav">
+                        <li id="el26" ng-click="setActive(25,26)">
+                            <a>
+                                <span class="sidebar-mini">PE</span>
+                                <span class="sidebar-normal">Postbacks Edit</span>
+                            </a>
+                        </li>
+                        <li id="el27" ng-click="setActive(25,27)">
+                            <a href="#!advertiser">
+                                <span class="sidebar-mini">AS</span>
+                                <span class="sidebar-normal">Advertisers and Status</span>
+                            </a>
+                        </li>
+                        <li id="el28" ng-click="setActive(25,28)">
+                            <a href="#!buyers">
+                                <span class="sidebar-mini">BA</span>
+                                <span class="sidebar-normal">Buyers and AfID</span>
+                            </a>
+                        </li>
+                        <li id="el29" ng-click="setActive(25,29)">
+                            <a>
+                                <span class="sidebar-mini">TP</span>
+                                <span class="sidebar-normal">Trackers and prefix</span>
+                            </a>
+                        </li>
+                        <li id="el30" ng-click="setActive(25,30)">
+                            <a>
+                                <span class="sidebar-mini">CR</span>
+                                <span class="sidebar-normal">Currency and rate</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <br/>
+            <hr/>
+            <li>
+                <a href="/logout">
+                    <i class="ti-share-alt"></i>
+                    <p>Logout</p>
+                </a>
+            </li>
+        </ul>
+        <div class="ps-scrollbar-y-rail">
+            <div class="ps-scrollbar-y"></div>
+        </div>
+    </div>
+</div>
+<div ng-view=""></div>
+<script src="scripts/jquery-3.2.1.js"></script>
+<script src="scripts/angular.js"></script>
+<script src="scripts//angular-route.js"></script>
+<script src="scripts//bootstrap.min.js"></script>
+<script src="scripts//ui-bootstrap-tpls-2.2.0.js"></script>
+<script src="scripts//ui-bootstrap-tpls-1.2.5.js"></script>
+<script src="scripts/nya-bs-select.js"></script>
+<script src="scripts/angular-animate.min.js"></script>
+<script src="scripts/angular-aria.min.js"></script>
+<script src="scripts/angular-messages.min.js"></script>
+<!-- Angular Material Library -->
+<script src="scripts/angular-material.min.js"></script>
+<script src="scripts/common.js"></script>
+<script src="scripts/dashboardHelper.js"></script>
+
+<script src="scripts/chartist.min.js"></script>
+<script src="scripts/chartist-plugin-tooltip.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js"></script>
+
+<script src="scripts/app.js"></script>
+<script src="scripts/route.js"></script>
+<script src="scripts/service/dateFactory.js"></script>
+<script src="scripts/controllers/conversionController.js"></script>
+<script src="scripts/controllers/advertiserController.js"></script>
+<script src="scripts/controllers/postbackController.js"></script>
+<script src="scripts/controllers/payrollController.js"></script>
+<script src="scripts/controllers/buyerController.js"></script>
+<script src="scripts/controllers/buyerHomeController.js"></script>
+<script src="scripts/controllers/statisticController.js"></script>
+<script src="scripts/controllers/sourcesController.js"></script>
+<script src="scripts/controllers/arbitratorExecutiveController.js"></script>
+<script src="scripts/controllers/planByBuyerController.js"></script>
+<script src="scripts/controllers/dashboardController.js"></script>
+<script src="scripts/controllers/adminDashboardController.js"></script>
+<script src="scripts/controllers/costManagementController.js"></script>
+<script src="scripts/controllers/mainController.js"></script>
+<script src="scripts/controllers/totalController.js"></script>
+<script src="scripts/controllers/buyerStatisticController.js"></script>
+<script src="scripts/controllers/buyerPaymentsController.js"></script>
+<script src="scripts/controllers/advertiserBalanceController.js"></script>
+<script src="scripts/controllers/passwordController.js"></script>
+<script src="scripts/controllers/getAfidController.js"></script>
+<script src="scripts/controllers/balancePerMonthController.js"></script>
+<script src="scripts/service/authorizationService.js"></script>
+<script src="scripts/service/roleService.js"></script>
+<script src="scripts/service/transferService.js"></script>
+<script src="scripts/selectpicker.js"></script>
+<script src="scripts/bootstrap-notify.js"></script>
+<script src="scripts/alertify.min.js"></script>
+<script src="scripts/sidebar.js"></script>
+<script src="scripts/angular-resource.js"></script>
+<script src="scripts/moment.js"></script>
+<script src="scripts/daterangepicker.js"></script>
+<script src="scripts/angular-daterangepicker.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $(window).height();
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#mini-logo').css('display', 'none');
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<div ng-controller="balancePerMonthController" class="main-panel" ng-init="initAdverts();getBalance();">
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-minimize">
+                <button class="btn btn-fill btn-icon" onclick="sidebarChange()"><i class="ti-menu"></i></button>
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand">
+                    Balance per month
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="row" style="margin-left: 15px; margin-right: 15px; margin-top: 25px">
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="icon-big icon-primary text-center">
+                                    <i class="ti-calendar"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="numbers">
+                                    <p>Revenue</p>
+                                    $ 0
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <hr class="card-footer-hr"/>
+                        <div class="stats">
+                            <i class="ti-calendar"></i>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="icon-big icon-info text-center">
+                                    <i class="ti-check-box"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="numbers">
+                                    <p>Total Paid</p>
+                                    $ 0
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <hr class="card-footer-hr"/>
+                        <div class="stats">
+                            <i class="ti-calendar"></i>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="icon-big icon-success text-center">
+                                    <i class="ti-check-box"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="numbers">
+                                    <p>Total Liability</p>
+                                    $ 0
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <hr class="card-footer-hr"/>
+                        <div class="stats">
+                            <i class="ti-calendar"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="row margin-backdown" style="margin-left: 15px; margin-right: 15px">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="pull-right">
+                                <button class="btn btn-info btn-md btn-fill btn-sm btn-in-header"
+                                        data-toggle="modal"
+                                        data-target="#addIncomeModal"
+                                        ng-click="getAccounts();">
+                                    Add
+                                </button>
+                                <button class="btn btn-google btn-md btn-fill btn-sm btn-in-header"
+                                        data-toggle="modal"
+                                        data-target="#moreInfoModal">
+                                    More
+                                </button>
+                                <button class="btn btn-facebook btn-md btn-fill btn-sm btn-in-header"
+                                        ng-click="go('/advertiserBalance')">
+                                    Total
+                                </button>
+                            </div>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <select class="selectpicker" multiple
+                                            data-style="btn-info btn-fill btn-block btn-sm"
+                                            data-size="5"
+                                            title="Advertisers"
+                                            data-header="Advertisers"
+                                            ng-model="selectedAdv">
+                                        <option class="small-font" ng-repeat="a in advNames" data-select-watcher
+                                                data-last="{{$last}}" value="{{a.id}}">{{a.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control white-input-no-border"
+                                            data-ng-model="selectedYear"
+                                            data-ng-options="v as k for (k, v) in yearOptions">
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control white-input-no-border"
+                                            data-ng-model="selectedMonth"
+                                            data-ng-options="v as k for (k, v) in monthOptions">
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-content">
+                            <div class="table-responsive table-full-width">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th><a>Month</a></th>
+                                        <th><a>Advertiser</a></th>
+                                        <th><a>From Postback</a></th>
+                                        <th><a>Income</a></th>
+                                        <th><a>Liability</a></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="item in balance">
+                                        <td>{{item.month}}</td>
+                                        <td>{{item.advname}}</td>
+                                        <td>{{item.revenue}} USD</td>
+                                        <td>{{item.income}}</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr ng-show="balance.length === 0">
+                                        <td colspan="5">
+                                            <div class="loader text-center" ng-show="showBalancePerMonthLoader"></div>
+                                            <div class="text-center" ng-show="!showBalancePerMonthLoader">No data</div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addIncomeModal" class="modal fade" role="dialog" style="background: rgba(0, 0, 0, 0.6);">
+        <div class="modal-dialog" style="width:90%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Income Management</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><a>Advertiser</a></th>
+                                    <th><a>Date</a></th>
+                                    <th><a>Sum Total</a></th>
+                                    <th><a>Comission</a></th>
+                                    <th><a>Sum Bank</a></th>
+                                    <th><a>Account</a></th>
+                                    <th><a>Currency</a></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="b in addedBalance track by $index">
+                                    <td>
+                                        <select class="selectpicker"
+                                                data-style="btn-info btn-fill btn-block"
+                                                data-size="5"
+                                                title="Advertisers"
+                                                data-header="Advertisers"
+                                                ng-model="b.advertiser"
+                                                style="width: 130%;margin-left: 5px;">
+                                            <option class="small-font" ng-repeat="a in advNames" data-select-watcher
+                                                    data-last="{{$last}}" value="{{a.id}}">{{a.name}}
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <md-datepicker ng-model="b.date" date-format="dd-MM-yyyy"
+                                                       md-placeholder="date">
+                                        </md-datepicker>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="white-input-no-border"
+                                               placeholder="Sum Total"
+                                               ng-model="b.total"
+                                               ng-change="calculateSumBank($index);"
+                                               style="width: 60%; margin-left: 20%;"/>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="white-input-no-border"
+                                               placeholder="Commission"
+                                               ng-model="b.commission"
+                                               ng-change="calculateSumBank($index);"
+                                               style="width: 60%; margin-left: 20%;"/>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="white-input-no-border"
+                                               placeholder="Sum Bank"
+                                               ng-model="b.bank"
+                                               style="width: 60%; margin-left: 20%;"/>
+                                    </td>
+                                    <td>
+                                        <select class="selectpicker"
+                                                data-style="btn-info btn-fill btn-block"
+                                                data-size="5"
+                                                title="Accounts"
+                                                data-header="Accounts"
+                                                ng-model="b.account"
+                                                ng-change="getCurrencyForCurrentAccount(b.account, $index)"
+                                                style="width: 130%;margin-left: 5px;">
+                                            <option class="small-font" ng-repeat="account in accounts" data-select-watcher
+                                                    data-last="{{$last}}" value="{{account.id}}">{{account.type}}
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        {{b.cur}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary"
+                            ng-click="saveAddedBalance();">Save
+                    </button>
+
+                    <button type="button" class="btn btn-success"
+                            ng-click="addBalance();">Add
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            ng-click="">Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="moreInfoModal" class="modal fade" role="dialog" style="background: rgba(0, 0, 0, 0.6);">
+        <div class="modal-dialog" style="width:80%; height: 80%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">More detailed data</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline">
+                        <div class="form-group">
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal"
+                            ng-click="">Apply
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            ng-click="">Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

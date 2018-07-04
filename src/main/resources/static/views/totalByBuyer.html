@@ -1,0 +1,164 @@
+<div ng-controller="totalController" ng-init="init();" class="main-panel">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-minimize">
+                <button class="btn btn-fill btn-icon" onclick="sidebarChange()"><i class="ti-menu"></i></button>
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand">
+                    Total By Buyer
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="row" style="margin-left: 15px; margin-right: 15px; margin-top: 25px">
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="icon-big icon-success text-center">
+                                    <i class="ti-wallet"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="numbers">
+                                    <p>Revenue</p>
+                                    $ {{revenue}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <hr class="card-footer-hr"/>
+                        <div class="stats">
+                            <i class="ti-calendar"></i> {{selectedMonth }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="icon-big icon-danger text-center">
+                                    <i class="ti-server"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="numbers">
+                                    <p>Spent</p>
+                                    $ {{spent}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <hr class="card-footer-hr"/>
+                        <div class="stats">
+                            <i class="ti-calendar"></i> {{ selectedMonth }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="icon-big icon-info text-center">
+                                    <i class="ti-stats-up"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="numbers">
+                                    <p>Profit</p>
+                                    $ {{profit}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <hr class="card-footer-hr"/>
+                        <div class="stats">
+                            <i class="ti-calendar"></i> {{ selectedMonth }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-right: 15px;margin-left: 15px">
+        <div class="col-md-12">
+            <div class="card" style="min-height: 120px;!important;"> <!-- min-height need for loader -->
+                <div class="card-header">
+                    <div class="pull-right">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <input type="number" class="form-control white-input-no-border"
+                                       ng-model="selectedYear"
+                                       ng-change="init();"
+                                       style="width: 60%; margin-left: 50%;position: relative; z-index: 10000"/>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control white-input-no-border"
+                                        ng-change="init();"
+                                        data-ng-model="selectedMonth"
+                                        data-ng-options="v as k for (k, v) in dateOptions"
+                                        style="z-index: 10000; position: relative; margin-bottom: 5px;">
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <h4 class="card-title" style="display: inline-block">Summary</h4>
+                    <button class="btn btn-success btn-sm btn-fill" ng-click="init();"
+                            style="z-index: 10000; position: relative; display: inline-block; margin-left: 30%">
+                        Reload
+                    </button>
+
+
+                </div>
+                <div class="card-content">
+                    <div style="overflow-y: auto;width: 100%;">
+                        <table class="table fixed-cols" id="totalTable">
+                            <thead>
+                            <tr style="text-align: center; vertical-align: middle">
+                                <th ng-repeat="header in headers"
+                                    class="text-nowrap"><a>{{header}}</a>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="row in result">
+                                <td ng-repeat="column in row track by $index"
+                                    class="text-nowrap"
+                                    ng-class="{greenTd: column > 0, redTd: column < 0, greyTd: column === 0, greyTd: column === 0.00, greyTd: column === '0'}"
+                                >{{column}}
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr ng-show="showLoader">
+                                <td colspan="10">
+                                    <div class="loader" style="text-align: center;" ng-show="showLoader"></div>
+                                    <div style="text-align: center;" ng-show="result2.length === 0 && !showLoader">No
+                                        data
+                                    </div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
